@@ -1,0 +1,40 @@
+{% load static %}
+
+<title>Main Page</title>
+<link rel="stylesheet" href="{% static 'main.css' %}" type="text/css">
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+
+{% include 'navbar.html' %}
+
+<body>
+    <table class="table table-hover table-dark">
+        <thead>
+            <tr>
+                <th scope="col">Symbol</th>
+                <th scope="col">Max Price</th>
+                <th scope="col">Min Price</th>
+                <th scope="col">Percentage</th>
+                <th scope="col">Ticker Volume</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for coin in coin_data %}
+                <tr>
+                    <th scope="row">{{ coin.symbol }}</th>
+                    <td>{{ coin.high }}</td>
+                    <td>{{ coin.low }}</td>
+                    <td>{{ coin.percentage }}</td>
+                    <td>{{ coin.volume }}</td>
+                </tr>
+                {% if coin.error %}
+                    <tr>
+                        <td colspan="5" class="text-danger">{{ coin.error }}</td>
+                    </tr>
+                {% endif %}
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
