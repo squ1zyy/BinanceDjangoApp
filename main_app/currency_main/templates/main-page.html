@@ -21,20 +21,13 @@
             </tr>
         </thead>
         <tbody>
-            {% for coin in coin_data %}
-                <tr>
-                    <th scope="row">{{ coin.symbol }}</th>
-                    <td>{{ coin.high }}</td>
-                    <td>{{ coin.low }}</td>
-                    <td>{{ coin.percentage }}</td>
-                    <td>{{ coin.volume }}</td>
-                </tr>
-                {% if coin.error %}
-                    <tr>
-                        <td colspan="5" class="text-danger">{{ coin.error }}</td>
-                    </tr>
-                {% endif %}
-            {% endfor %}
+            <tr>
+                <th scope="row">{{ symbol }}</th>
+                <td>{{ high }}</td>
+                <td>{{ low }}</td>
+                <td>{{ percentage }}</td>
+                <td>{{ volume }}</td>
+            </tr>
         </tbody>
     </table>
 </body>

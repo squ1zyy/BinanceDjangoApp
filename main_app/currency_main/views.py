@@ -14,13 +14,12 @@ def update_binance_data(request):
         try:
             ticker_stats = client.get_ticker(symbol=symbol)
 
-            # Extract relevant data
             ticker_percentage = ticker_stats['priceChangePercent']
             ticker_volume = ticker_stats['volume']
             ticker_high = ticker_stats['highPrice']
             ticker_low = ticker_stats['lowPrice']
 
-            coin_data = {
+            crypto_data = {
                 'symbol': symbol,
                 'high': ticker_high,
                 'low': ticker_low,
@@ -28,17 +27,17 @@ def update_binance_data(request):
                 'volume': ticker_volume,
             }
 
-            data.append(coin_data)
+            data.append(crypto_data)
 
         except Exception as e:
-            coin_data = {
+            crypto_data = {
                 'symbol': symbol,
                 'error': f"Error fetching data: {e}",
             }
-            data.append(coin_data)
+            data.append(crypto_data)
 
     context = {
-        'coin_data': data,
+        'crypto_data': data,
     }
 
     return render(request, 'main-page.html', context)
