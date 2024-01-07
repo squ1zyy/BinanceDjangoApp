@@ -1,33 +1,81 @@
 {% load static %}
 
-<title>Main Page</title>
-<link rel="stylesheet" href="{% static 'main.css' %}" type="text/css">
-<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
-<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+<!DOCTYPE html>
+<html lang="en">
 
-{% include 'navbar.html' %}
+<head>
+    <title>Main Page</title>
+    <link rel="stylesheet" href="{% static 'main.css' %}" type="text/css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+</head>
 
-<body>
-    <table class="table table-hover table-dark">
+<body style="background-color: #212329;">
+    {% include 'navbar.html' %}
+
+    <table id="crypto-table" class="table table-hover table-dark">
         <thead>
             <tr>
-                <th scope="col">Symbol</th>
-                <th scope="col">Max Price</th>
-                <th scope="col">Min Price</th>
+                <th scope="col">Name</th>
+                <th scope="col">Price</th>
                 <th scope="col">Percentage</th>
-                <th scope="col">Ticker Volume</th>
+                <th scope="col">Volume</th>
+                <th scope="col">High</th>
+                <th scope="col">Low</th>
             </tr>
         </thead>
         <tbody>
+            {% for crypto in crypto_data %}
             <tr>
-                <th scope="row">{{ symbol }}</th>
-                <td>{{ high }}</td>
-                <td>{{ low }}</td>
-                <td>{{ percentage }}</td>
-                <td>{{ volume }}</td>
+                <th scope="row">{{ crypto.symbol }}</th>
+                <td id="price_{{ crypto.symbol }}">{{ crypto.price }}</td>
+
+                {% if crypto.percentage >= '0' %}
+                <td id="percentage_{{ crypto.symbol }}" style="color: green">+{{ crypto.percentage }} %</td>
+                {% else %}
+                <td id="percentage_{{ crypto.symbol }}" style="color: red">{{ crypto.percentage }} %</td>
+                {% endif %}
+
+                <td id="volume_{{ crypto.symbol }}">{{ crypto.volume }}</td>
+                <td id="high_{{ crypto.symbol }}">{{ crypto.high }}</td>
+                <td id="low_{{ crypto.symbol }}">{{ crypto.low }}</td>
             </tr>
+            {% endfor %}
         </tbody>
     </table>
+
+    <script>
+        $(document).ready(function() {
+            function updateElement() {
+                $.ajax({
+                    url: "{% url 'item_list' %}",
+                    type: 'GET',
+                    dataType: 'json',
+                    success: function(data) {
+                        $.each(data, function(symbol, newData) {
+                            $('#price_' + symbol).html(newData.price);
+                            $('#percentage_' + symbol).html(newData.percentage);
+                            $('#volume_' + symbol).html(newData.volume);
+                            $('#high_' + symbol).html(newData.high);
+                            $('#low_' + symbol).html(newData.low);
+                        });
+                    },
+                    error: function(error) {
+                        console.log(error);
+                    }
+                });
+            }
+
+            setInterval(updateElement, 3000);
+        });
+
+        $(document).ready(function() {
+        $("#crypto-table").draggable();
+    });
+    </script>
 </body>
+
+</html>

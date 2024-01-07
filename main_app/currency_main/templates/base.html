@@ -5,6 +5,11 @@
     <title>Base</title>
 </head>
 <body>
-
+    {% if user.is_authenticated %}
+        <a href="{% url 'logout' %}">Log Out</a>    
+    {% else %}
+        <a href="{% url 'register' %}">Sign Up</a>
+        <a href="{% url 'login' %}">Sign In</a>
+    {% endif %}
 </body>
 </html>

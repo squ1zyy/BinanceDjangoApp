@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <style>
+        body {
+            background-color: #212329;
+        }
+
+        .login-form {
+            max-width: 400px;
+            margin: 50px auto;
+            background-color: #212329;
+            padding: 20px;
+            border-radius: 10px;
+            box-sizing: border-box;
+        }
+
+        .login-text {
+            text-align: center;
+            color: #fff;
+        }
+
+        .input-box {
+            position: relative;
+            margin-bottom: 20px;
+            background-color: #212329; /* Set the background color */
+            border: 1px solid #fff; /* Set the yellow border */
+            box-sizing: border-box;
+        }
+
+        .icon {
+            position: absolute;
+            top: 50%;
+            left: 10px;
+            transform: translateY(-50%);
+            color: #fff;
+        }
+
+        input[type="text"],
+        input[type="password"] {
+            width: calc(100% - 40px);
+            padding: 10px;
+            padding-left: 40px;
+            border: none;
+            outline: none;
+            color: #495057;
+            background-color: #212329; /* Match the background color */
+            box-sizing: border-box;
+        }
+
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: rgb(236, 236, 70);
+            color: #000;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: rgb(240, 240, 9);
+        }
+
+        .alert-danger {
+            margin-top: 15px;
+            text-align: center;
+        }
+    </style>
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <title>Login</title>
+</head>
+<body>
+    {% include 'navbar.html' %} 
+    <div class="login-form">
+        <h2 class="login-text">Login</h2>
+        <form method="post">
+            {% csrf_token %}
+            
+            <div class="input-box">
+                <span class="icon"><i class="icon ion-person"></i></span>
+                {{ form.username }}
+            </div>
+
+            <div class="input-box">
+                <span class="icon"><i class="icon ion-lock-closed"></i></span>
+                {{ form.password }}
+            </div>
+    
+            <button type="submit">Login</button>
+            
+            {% for msg in messages %}
+            <div class="alert alert-danger" role="alert">
+            {{ msg }}
+            </div>
+            {% endfor %}
+        </form>
+    </div>
+    
+    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+</body>
+</html>

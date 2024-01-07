@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Item List</title>
+</head>
+<body>
+    <ul id="item-list">
+        <li>Initial Item 1</li>
+        <li>Initial Item 2</li>
+    </ul>
+
+    <button id="add-item-btn">Add Dynamic Item</button>
+
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+
+    <script>
+        $(document).ready(function() {
+
+            function addDynamicItem() {
+                var itemName = 'Dynamic Item ' + Math.floor(Math.random() * 100);
+                var newItem = '<li>' + itemName + '</li>';
+                $('#item-list').append(newItem);
+            }
+
+            $('#add-item-btn').click(function() {
+                addDynamicItem();
+            });
+
+            $.ajax({
+                url: '{% url "item_list" %}',
+                type: 'GET',
+                dataType: 'json',
+                success: function(response) {
+                    var items = response.items;
+                    var itemList = $('#item-list');
+                    itemList.empty();
+                    $.each(items, function(index, item) {
+                        itemList.append('<li>' + item.name + '</li>');
+                    });
+                },
+                error: function(error) {
+                    console.log(error);
+                }
+            });
+        });
+    </script>
+</body>
+</html>

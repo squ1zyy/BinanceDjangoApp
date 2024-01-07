@@ -1,20 +1,47 @@
 body {
     margin: 0;
     padding: 0;
-    height: 100vh;
-    background: linear-gradient(45deg, blue, purple, pink);
-    background-size: 400% 400%;
-    animation: gradientAnimation 12s infinite;
+    background-color: #121212;
 }
 
-@keyframes gradientAnimation {
-    0% {
-        background-position: 0% 50%;
-    }
-    50% {
-        background-position: 100% 50%;
-    }
-    100% {
-        background-position: 0% 50%;
-    }
+.red {
+    color: rgba(255, 0, 0, 0.616);
+}
+
+.green {
+    color: rgba(0, 128, 0, 0.616);
+}
+
+#crypto-table {
+    width: 20vw; 
+    height: 60vh;
+    margin: -1px;
+    margin-right: 400px;
+    float: right; 
+    background-color: black;
+    border-collapse: collapse;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.336);
+    font-size: 14px;
+    color: rgba(255, 255, 255, 0.753);
+    cursor: grab;
+}
+
+#crypto-table th,
+#crypto-table td {
+    text-align: center;
+    padding: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.336);
+}
+
+#crypto-table th {
+    background-color: #212329;
+}
+
+#crypto-table tbody tr:nth-child(even) {
+    background-color: #212329;
+}
+
+#crypto-table tbody tr:nth-child(odd) {
+    background-color: #212329;
 }

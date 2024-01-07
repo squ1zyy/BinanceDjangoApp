@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>....</title>
+</head>
+<body>
+    {% block title %}
+    Email Confirm
+    {% endblock %}
+    {% block content %}
+
+    Hi {{ user.username }},
+
+    Thank you for signing up! Please click the link below to confirm your email address:
+    http://{{ domain }}{% url 'account_confirm_email' uidb64=uid token=token %}
+    Thank you for using our site!
+
+    {% enblock %}
+</body>
+</html>
+
+
