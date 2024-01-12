@@ -1,18 +1,16 @@
 from django.shortcuts import render, redirect
-from django.http import JsonResponse
 from binance.client import Client
 from currency_main.forms import UserRegisterForm, UserLoginForm
-from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
-from django.contrib.auth import login as auth_login, logout as auth_logout
+from django.contrib.auth import login as auth_login, logout as auth_logout, get_user_model
 from django.utils.encoding import force_str, force_bytes
 from django.template.loader import render_to_string
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from currency_main.token import account_activation_token
 from django.contrib.sites.shortcuts import get_current_site
 from django.core.mail import EmailMessage
-from django.contrib.auth import get_user_model
 from django.contrib import messages
 from .models import *
+from binance.exceptions import BinanceAPIException
 
 client = Client()
 
@@ -59,6 +57,38 @@ def main_page(request):
     return update_binance_data(request)
 
 def graphics(request):
+    return render(request, 'graphics.html')
+
+
+def currency_converter(request):
+
+    ticker = client.get_ticker(symbol='BTCUSDT')
+    last_price = float(ticker['lastPrice'])
+
+    if request.method == 'GET':
+        print('1111')
+        amount = float(request.GET.get('amount', 1))
+        conversion_type = request.GET.get('conversion_type', 'btc_to_usd')
+
+        print(amount, conversion_type)
+
+        if conversion_type == 'btc_to_usd':
+            converted_amount = amount * last_price
+            converted_currency = 'USDT'
+            print('work')
+        elif conversion_type == 'usd_to_btc':
+            converted_amount = amount / last_price
+            converted_currency = 'BTC'
+        else:
+            converted_amount = 0
+            converted_currency = 'Invalid Currency'
+
+        return render(request, 'graphics.html', {
+            'amount': amount,
+            'converted_amount': converted_amount,
+            'converted_currency': converted_currency,
+        })
+
     return render(request, 'graphics.html')
 
 def register(request):

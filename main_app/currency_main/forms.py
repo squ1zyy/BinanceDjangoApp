@@ -19,9 +19,7 @@ class UserLoginForm(AuthenticationForm):
     username = forms.CharField(label="Имя пользователя:", widget=forms.TextInput(attrs={"class": 'form-control', 'placeholder': 'Введите ваш никнейм'}))
     password = forms.CharField(label="Пароль:", widget=forms.PasswordInput(attrs={"class": 'form-control', 'placeholder': 'Введите пароль'}))
 
-class SearchForm(forms.Form):
-    query = forms.CharField()
-
 class EmailNotificationForm(forms.Form):
     subject = forms.CharField(max_length=100)
     message = forms.CharField(widget=forms.Textarea)
+

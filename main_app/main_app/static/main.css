@@ -1,7 +1,7 @@
 body {
     margin: 0;
     padding: 0;
-    background-color: #121212;
+    background-color: #fff;
 }
 
 .red {
@@ -44,4 +44,29 @@ body {
 
 #crypto-table tbody tr:nth-child(odd) {
     background-color: #212329;
+}
+
+.navbar-dark.bg-binance {
+    background-color: #121212;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.336);
+}
+
+.navbar-dark.bg-binance .navbar-toggler-icon {
+    background-color: #fff;
+}
+
+.navbar-dark.bg-binance .nav-link {
+    color: #fff !important;
+}
+
+.navbar-dark.bg-binance .nav-link:hover {
+    color: #f3ba2f !important;
+}
+
+.justify-content-between {
+    justify-content: space-between !important;
+}
+
+.navbar-nav:last-child {
+    margin-right: 0;
 }

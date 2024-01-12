@@ -1,5 +1,7 @@
 {% load static %}
 
+<link rel="stylesheet" href="{% static 'main.css' %}" type="text/css">
+
 <nav class="navbar navbar-expand-lg navbar-dark bg-binance">
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
@@ -13,8 +15,11 @@
         <ul class="navbar-nav">
             {% if request.user.is_authenticated %}
                 <li class="nav-item active">
-                    <a class="nav-link" href="{% url 'logout' %}">Log Out</a>
+                    <a class="nav-link" href="{% url 'graphics-page' %}">Graphic</a>
                 </li>
+                <li class="nav-item active">    
+                    <a class="nav-link" href="{% url 'logout' %}">Log Out</a>
+                </li>                
             {% else %}
                 <li class="nav-item active">
                     <a class="nav-link" href="{% url 'register' %}">Sign Up</a>
@@ -27,30 +32,3 @@
         </ul>
     </div>
 </nav>
-
-<style>
-    .navbar-dark.bg-binance {
-        background-color: #121212;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.336);
-    }
-
-    .navbar-dark.bg-binance .navbar-toggler-icon {
-        background-color: #fff;
-    }
-
-    .navbar-dark.bg-binance .nav-link {
-        color: #fff !important;
-    }
-
-    .navbar-dark.bg-binance .nav-link:hover {
-        color: #f3ba2f !important;
-    }
-
-    .justify-content-between {
-        justify-content: space-between !important;
-    }
-
-    .navbar-nav:last-child {
-        margin-right: 0;
-    }
-</style>
