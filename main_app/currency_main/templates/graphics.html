@@ -5,57 +5,116 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Graphics</title>
+    <title>{{ coin }}: {{ price }}</title>
     <link rel="stylesheet" href="{% static 'main.css' %}" type="text/css">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
 </head>
 {% include 'navbar.html' %}
 
 <body>
+    <!-- Navbar included from 'navbar.html' -->
+
+    <!-- Binance-style trading widget container -->
+    <div class="binance-trading-widget">
+        <div class="binance-trading-view" id="tradingview_9d57b"></div>
+    </div>
+
+    <form method="get" class="binance-trading-form">
+        <div class="search-bar">
+            <label for="coin">Select Coin:</label>
+            <input type="text" id="coin" name="coin" placeholder="Enter coin symbol (e.g., BTC)">
+            <button id="update-chart">Update Chart</button>
+        </div>
+    </form>
+
     <div class="chart-container">
-        <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
+        <script type="text/javascript" src="https://s3.tradingview.com/tv.js" defer></script>
         <script type="text/javascript">
-              new TradingView.widget(
-                {
-                  "width": 1050,
-                  "height": 600,
-                  "symbol": "BINANCE:BTCUSDT",
-                  "interval": "1H",
-                  "timezone": "Etc/UTC",
-                  "theme": "dark",
-                  "style": "1",
-                  "locale": "en",
-                  "toolbar_bg": "#f1f3f6",
-                  "enable_publishing": false,
-                  "allow_symbol_change": true,
-                  "container_id": "tradingview_9d57b"
-                }
-              );
-        </script>
-        <div id="tradingview_9d57b"></div>
-      </div>
+                $(document).ready(function () {
+                    function updateChart(coinSymbol) {
+                        console.log("Updating chart for", coinSymbol);
+                        new TradingView.widget(
+                            {
+                                "width": 1050,
+                                "height": 600,
+                                "symbol": `BINANCE:${coinSymbol}`,
+                                "interval": "1H",
+                                "timezone": "Etc/UTC",
+                                "theme": "dark",
+                                "style": "1",
+                                "locale": "en",
+                                "toolbar_bg": "#f1f3f6",
+                                "enable_publishing": false,
+                                "allow_symbol_change": true,
+                                "container_id": "tradingview_9d57b"
+                            }
+                        );
+                    }
+    
+                    // Initial chart update, assuming you want it to be displayed on page load
+                    updateChart('{{ coin }}'); // Replace 'BTCUSD' with the initial coin symbol you want to display
+    
+                    $('#update-chart').on('click', function () {
+                        console.log("Update chart button clicked!");
+                        var coinSymbol = $('#coin').val().toUpperCase();
+                        updateChart(coinSymbol);
+                    });
+                });
+            </script>
+            <div id="tradingview_9d57b"></div>
+        </div>
+        
+        
 
-      <h1>Currency Converter</h1>
+        <h1>Converter</h1>
 
-      {% block content %}
-        <form method="get">
-          {% csrf_token %}
-          <label for="amount">Amount:</label>
-          <input type="number" id="amount" name="amount" value="1">
+    <form id="currency-converter-form" class="binance-converter-form">
+        {% csrf_token %}
+        <label for="amount" style="color: #fff" >Amount:</label>
+        <input type="number" id="amount" name="amount" value="1">
 
-          <label for="conversion_type">Conversion Type:</label>
-          <select id="conversion_type" name="conversion_type">
-            <option value="btc_to_usd">BTC to USD</option>
-            <option value="usd_to_btc">USD to BTC</option>
-          </select>
+        <label for="conversion_type" style="color: #fff">Conversion Type:</label>
+        <select id="conversion_type" name="conversion_type">
+            <option value="{{ coin }}_to_usd" selected>{{ coin }} to USD</option>
+            <option value="usd_to_{{ coin }}">USD to {{ coin }}</option>
+        </select>
 
-          <button type="submit">Convert</button>
-        </form>
+        <button type="submit">Convert</button>
+    </form>
 
-        <h3 style="color:black">Converted Amount: {{ converted_amount }} {{ converted_currency }}</h3>
-      {% endblock %}
+    <h3 class="binance-converted-amount">Converted Amount: {{ converted_amount }} {{ converted_currency }}</h3>
+
+    <script>
+        $(document).ready(function () {
+            function updateCurrencyConverter(formData) {
+                $.ajax({
+                    url: '{% url "graphics-page" %}',
+                    method: 'GET',
+                    data: formData,
+                    success: function (data) {
+                        $('h3').text('Converted Amount: ' + data.converted_amount + ' ' + data.converted_currency);
+                    },
+                    error: function (error) {
+                        console.log('Error:', error);
+                    }
+                });
+            }
+
+            $('#currency-converter-form').on('submit', function (event) {
+                event.preventDefault();
+                const formData = $(this).serialize();
+                updateCurrencyConverter(formData);
+            });
+
+            $('#conversion_type').on('change', debounce(function () {
+                const formData = $('#currency-converter-form').serialize();
+                updateCurrencyConverter(formData);
+            }, 500));
+        });
+    </script>
+
 </body>
 </html>

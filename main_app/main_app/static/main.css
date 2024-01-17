@@ -1,7 +1,9 @@
+/* Add Binance theme to existing styles */
+
 body {
     margin: 0;
     padding: 0;
-    background-color: #fff;
+    background-color: #212329;
 }
 
 .red {
@@ -12,6 +14,65 @@ body {
     color: rgba(0, 128, 0, 0.616);
 }
 
+/* Binance theme colors */
+:root { 
+    --secondary-bg-color: rgb(17, 17, 17);
+    --text-color: #ffffff;
+    --button-bg-color: rgb(17, 17, 17);
+    --button-text-color: #ffffff;
+}
+
+/* Navbar styles */
+.navbar {
+    background-color: #121212; /* Binance theme color */
+    border-bottom: 1px solid rgba(255, 255, 255, 0.336);
+}
+
+.navbar a {
+    color: #fff !important; /* Binance theme text color */
+}
+
+.navbar a:hover {
+    color: #f3ba2f !important; /* Binance theme hover text color */
+}
+
+/* Search bar styles */
+.search-bar {
+    margin-top: 20px;
+}
+
+#coin, #update-chart {
+    background-color: var(--secondary-bg-color);
+    color: var(--text-color);
+    border: 1px solid var(--button-bg-color);
+}
+
+#coin::placeholder {
+    color: var(--text-color);
+}
+
+/* Chart container styles */
+.chart-container {
+    margin-bottom: 105px;
+}
+
+/* Converter styles */
+h1 {
+    color: var(--text-color);
+    margin-top: 40px;
+}
+
+#currency-converter-form {
+    margin-top: 20px;
+}
+
+#amount, #conversion_type, button {
+    background-color: var(--button-bg-color);
+    color: var(--button-text-color);
+    border: 1px solid var(--button-bg-color);
+}
+
+/* Existing styles for the crypto table remain unchanged */
 #crypto-table {
     width: 20vw; 
     height: 60vh;
@@ -46,27 +107,58 @@ body {
     background-color: #212329;
 }
 
-.navbar-dark.bg-binance {
-    background-color: #121212;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.336);
-}
-
-.navbar-dark.bg-binance .navbar-toggler-icon {
-    background-color: #fff;
-}
-
-.navbar-dark.bg-binance .nav-link {
-    color: #fff !important;
-}
-
-.navbar-dark.bg-binance .nav-link:hover {
-    color: #f3ba2f !important;
-}
-
+/* Justified content between classes */
 .justify-content-between {
     justify-content: space-between !important;
 }
 
 .navbar-nav:last-child {
     margin-right: 0;
+}
+.binance-trading-widget {
+    margin-top: 20px;
+}
+
+.binance-trading-view {
+    width: 100%;
+    height: 600px;
+}
+
+/* Binance trading form styles */
+.binance-trading-form {
+    margin-top: 20px;
+}
+
+.binance-trading-form .search-bar {
+    display: flex;
+    align-items: center;
+}
+
+.binance-trading-form label {
+    margin-right: 10px;
+}
+
+.binance-trading-form input {
+    padding: 8px;
+    margin-right: 10px;
+    flex: 1;
+}
+
+.binance-trading-form button {
+    padding: 8px 15px;
+    background-color: var(--button-bg-color);
+    color: var(--button-text-color);
+    border: 1px solid var(--button-bg-color);
+    cursor: pointer;
+}
+
+/* Binance converter form styles */
+.binance-converter-form {
+    margin-top: 20px;
+}
+
+/* Binance converted amount display styles */
+.binance-converted-amount {
+    margin-top: 20px;
+    color: var(--text-color);
 }

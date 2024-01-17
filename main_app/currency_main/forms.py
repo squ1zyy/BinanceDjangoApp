@@ -22,4 +22,3 @@ class UserLoginForm(AuthenticationForm):
 class EmailNotificationForm(forms.Form):
     subject = forms.CharField(max_length=100)
     message = forms.CharField(widget=forms.Textarea)
-

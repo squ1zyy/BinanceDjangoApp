@@ -61,22 +61,22 @@ def graphics(request):
 
 
 def currency_converter(request):
-
-    ticker = client.get_ticker(symbol='BTCUSDT')
+    coin = request.GET.get('coin', default='BTCUSDT')
+    
+    ticker = client.get_ticker(symbol=f'{coin}')
     last_price = float(ticker['lastPrice'])
 
-    if request.method == 'GET':
-        print('1111')
+    formatted_price = "{:,.2f}".format(last_price)
+
+    if request.method == 'GET': 
         amount = float(request.GET.get('amount', 1))
-        conversion_type = request.GET.get('conversion_type', 'btc_to_usd')
+        conversion_type = request.GET.get('conversion_type', f'{coin}_to_usd')
 
-        print(amount, conversion_type)
-
-        if conversion_type == 'btc_to_usd':
+        if conversion_type == f'{coin}_to_usd':
             converted_amount = amount * last_price
             converted_currency = 'USDT'
-            print('work')
-        elif conversion_type == 'usd_to_btc':
+
+        elif conversion_type == f'usd_to_{coin}':
             converted_amount = amount / last_price
             converted_currency = 'BTC'
         else:
@@ -87,6 +87,8 @@ def currency_converter(request):
             'amount': amount,
             'converted_amount': converted_amount,
             'converted_currency': converted_currency,
+            'coin': coin,
+            'price': formatted_price,
         })
 
     return render(request, 'graphics.html')
