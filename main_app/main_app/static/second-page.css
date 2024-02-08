@@ -1,25 +1,27 @@
-.binance-trading-form {
-    position: fixed;
-    left: 45%;
-}
-
 .search-bar {
     text-align: center;
-    width: 300px; /* Установка ширины search-bar */
+    width: auto;
+    min-width: 490px;
+}
+
+.binance-trading-form {
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 #coin {
-    padding: 8px;
+    padding: 10px;
     border: none;
     background-color: #1e2026;
     color: #ffffff;
     border-radius: 5px;
     margin-right: 10px;
-    width: 150px;
+    width: 45%;
 }
 
 #update-chart {
-    padding: 8px 16px;
+    padding: 10px 16px;
     border: none;
     background-color: #1e2026;
     color: #ffffff;
@@ -28,11 +30,20 @@
 }
 
 #update-chart:hover {
-    background-color: #333333; /* Цвет фона кнопки при наведении */
+    background-color: #333333;
 }
 
-.form-container {
+#buyForm {
+    position: absolute;
+    top: 60px;
     margin-bottom: 10px;
+}
+
+#sellForm {
+    position: absolute;
+    top: 60px;
+    margin-bottom: 10px;
+    margin-left: 80%;
 }
 
 .form-container div {
@@ -43,10 +54,12 @@
     border-radius: 10px;
 }
 
-.form-container label {
+.form-container label{
     margin-right: 10px;
     width: 100px;
     text-align: right;
+    color: white;
+    font-weight: bold;
 }
 
 .form-container input[type="text"],
@@ -65,17 +78,26 @@
     border-color: #f0b90b;
 }
 
-.field-label {
+#buy_coin,
+#sell_coin {
     color: white;
-    font-weight: bold;
+    border: none;
+    padding: 10px 53px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    width: auto;
+    white-space: nowrap;
 }
-.input-container {
-    display: flex;
-    align-items: center;
+
+#buy_coin {
+    background-color: #32d993;
+    position: absolute;
+    left: 36.2%;
 }
-.input-prefix {
-    margin-right: 5px;
-}
-.input-suffix {
-    margin-left: 5px;
+
+#sell_coin {
+    background-color: #ff707e;
+    position: absolute;
+    right: 3.3%;
 }

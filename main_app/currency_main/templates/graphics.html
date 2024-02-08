@@ -6,7 +6,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ coin }}  |  {{ last_price }}</title>
+    <title>{{ last_price }}  ❘  {{ coin }}  ❘  Binance Spot</title>
     <link rel="icon" type="image/png" href="{% static 'logo.png' %}">
     <link rel="stylesheet" href="{% static 'second-page.css' %}" type="text/css">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
@@ -22,7 +22,7 @@
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             function updatePageTitle(coinSymbol, coinPrice) {
-                document.title = coinPrice + ' | ' + coinSymbol + ' | ' + 'Binance Spot';
+                document.title = coinPrice + ' ❘ ' + coinSymbol + ' ❘ ' + 'Binance Spot';
             }
 
             function updateCoinPrice() {
@@ -50,7 +50,7 @@
     <form method="get" class="binance-trading-form">
         <div class="search-bar">
             <input type="text" id="coin" name="coin" placeholder="Enter coin symbol (e.g., BTC)">
-            <button id="update-chart">Update Chart</button>
+            <button id="update-chart">Update</button>
         </div>
     </form>
 
@@ -94,43 +94,77 @@
         <div id="tradingview_9d57b"></div>
     </div>
 
-    <form>
+    <form id="buyForm">
         <div class="form-container">
             <div>
-                <label for="price" class="field-label">Price:</label>
-                <input type="text" id="price" name="price" dir="rtl" placeholder="USDT">
+                <label for="buyPrice" class="field-label">Price:</label>
+                <input type="text" id="buyPrice" name="price" dir="rtl" placeholder="USDT">
             </div>
             <div>
-                <label for="amount" class="field-label">Amount:</label>
-                <input type="text" id="amount" name="amount" dir="rtl" placeholder="{{ coin }}">
+                <label for="buyAmount" class="field-label">Amount:</label>
+                <input type="text" id="buyAmount" name="amount" dir="rtl" placeholder="{{ coin }}">
             </div>
             <div>
-                <label for="total" class="field-label">Total:</label>
-                <input type="text" id="total" name="total" dir="rtl" placeholder="USDT">
+                <label for="buyTotal" class="field-label">Total:</label>
+                <input type="text" id="buyTotal" name="total" dir="rtl" placeholder="USDT">
             </div>
+            <button id="buy_coin">Buy {{ coin }}</button>
         </div>
     </form>
-
+    
+    <form id="sellForm">
+        <div class="form-container">
+            <div>
+                <label for="sellPrice" class="field-label">Price:</label>
+                <input type="text" id="sellPrice" name="price" dir="rtl" placeholder="USDT">
+            </div>
+            <div>
+                <label for="sellAmount" class="field-label">Amount:</label>
+                <input type="text" id="sellAmount" name="amount" dir="rtl" placeholder="{{ coin }}">
+            </div>
+            <div>
+                <label for="sellTotal" class="field-label">Total:</label>
+                <input type="text" id="sellTotal" name="total" dir="rtl" placeholder="USDT">
+            </div>
+            <button id="sell_coin">Sell {{ coin }}</button>
+        </div>
+    </form>
+    
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            var priceInput = document.getElementById('price');
-            var amountInput = document.getElementById('amount');
-            var totalInput = document.getElementById('total');
-
-            priceInput.value = '{{ last_price }}';
-    
-            function updateTotal() {
-                var price = parseFloat(priceInput.value) || 0;
-                var amount = parseFloat(amountInput.value) || 0;
-                var total = price * amount;
+            const buyForm = document.getElementById('buyForm');
+            const sellForm = document.getElementById('sellForm');
+            
+            const buyPriceInput = document.getElementById('buyPrice');
+            const buyAmountInput = document.getElementById('buyAmount');
+            const buyTotalInput = document.getElementById('buyTotal');
+            
+            const sellPriceInput = document.getElementById('sellPrice');
+            const sellAmountInput = document.getElementById('sellAmount');
+            const sellTotalInput = document.getElementById('sellTotal');
+            
+            const lastPrice = parseFloat('{{ last_price }}') || 0;
+            
+            function updateTotal(priceInput, amountInput, totalInput) {
+                const price = parseFloat(priceInput.value) || 0;
+                const amount = parseFloat(amountInput.value) || 0;
+                const total = price * amount;
                 totalInput.value = total.toFixed(2);
             }
-    
-            updateTotal();
-    
-            priceInput.addEventListener('input', updateTotal);
-            amountInput.addEventListener('input', updateTotal);
+            
+            buyPriceInput.value = lastPrice.toFixed(2);
+            sellPriceInput.value = lastPrice.toFixed(2);
+            
+            buyForm.addEventListener('input', function() {
+                updateTotal(buyPriceInput, buyAmountInput, buyTotalInput);
+            });
+            
+            sellForm.addEventListener('input', function() {
+                updateTotal(sellPriceInput, sellAmountInput, sellTotalInput);
+            });
         });
     </script>
+
+    
 </body>
 </html>
