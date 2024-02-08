@@ -1,6 +1,6 @@
 {% load static %}
 
-<link rel="stylesheet" href="{% static 'main.css' %}" type="text/css">
+<link rel="stylesheet" href="{% static 'navbar.css' %}" type="text/css">
 
 <nav class="navbar navbar-expand-lg navbar-dark bg-binance">
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -16,6 +16,9 @@
             {% if request.user.is_authenticated %}
                 <li class="nav-item active">
                     <a class="nav-link" href="{% url 'graphics-page' %}">Graphic</a>
+                </li>
+                <li class="nav-item active">
+                    <a class="nav-link" href="{% url 'profile' %}">Profile</a>
                 </li>
                 <li class="nav-item active">    
                     <a class="nav-link" href="{% url 'logout' %}">Log Out</a>

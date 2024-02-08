@@ -1,0 +1,81 @@
+.binance-trading-form {
+    position: fixed;
+    left: 45%;
+}
+
+.search-bar {
+    text-align: center;
+    width: 300px; /* Установка ширины search-bar */
+}
+
+#coin {
+    padding: 8px;
+    border: none;
+    background-color: #1e2026;
+    color: #ffffff;
+    border-radius: 5px;
+    margin-right: 10px;
+    width: 150px;
+}
+
+#update-chart {
+    padding: 8px 16px;
+    border: none;
+    background-color: #1e2026;
+    color: #ffffff;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+#update-chart:hover {
+    background-color: #333333; /* Цвет фона кнопки при наведении */
+}
+
+.form-container {
+    margin-bottom: 10px;
+}
+
+.form-container div {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    margin-bottom: 5px;
+    border-radius: 10px;
+}
+
+.form-container label {
+    margin-right: 10px;
+    width: 100px;
+    text-align: right;
+}
+
+.form-container input[type="text"],
+.form-container select {
+    background-color: #2a2d35;
+    color: white;
+    border: 1px solid transparent;
+    padding: 10px;
+    border-radius: 5px;
+    transition: border-color 0.3s ease;
+    width: 200px;
+}
+
+.form-container input[type="text"]:hover,
+.form-container select:hover {
+    border-color: #f0b90b;
+}
+
+.field-label {
+    color: white;
+    font-weight: bold;
+}
+.input-container {
+    display: flex;
+    align-items: center;
+}
+.input-prefix {
+    margin-right: 5px;
+}
+.input-suffix {
+    margin-left: 5px;
+}

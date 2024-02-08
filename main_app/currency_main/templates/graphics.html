@@ -1,30 +1,54 @@
 {% load static %}
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ coin }}: {{ price }}</title>
-    <link rel="stylesheet" href="{% static 'main.css' %}" type="text/css">
+    <title>{{ coin }}  |  {{ last_price }}</title>
+    <link rel="icon" type="image/png" href="{% static 'logo.png' %}">
+    <link rel="stylesheet" href="{% static 'second-page.css' %}" type="text/css">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
 </head>
-{% include 'navbar.html' %}
 
-<body>
-    <!-- Navbar included from 'navbar.html' -->
+<body style="background-color: #161a1e">
+    
+    {% include 'navbar.html' %}
 
-    <!-- Binance-style trading widget container -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            function updatePageTitle(coinSymbol, coinPrice) {
+                document.title = coinPrice + ' | ' + coinSymbol + ' | ' + 'Binance Spot';
+            }
+
+            function updateCoinPrice() {
+                $.ajax({
+                    url: "{% url 'get_last_price' %}",
+                    type: 'GET',
+                    success: function(data) {
+                        var coinSymbol = '{{ coin }}';
+                        updatePageTitle(coinSymbol, data.last_price);
+                    },
+                    error: function(xhr, status, error) {
+                        console.error('Ошибка при получении цены монеты:', error);
+                    }
+                });
+            }
+
+            setInterval(updateCoinPrice, 500);
+        });
+    </script>
+
     <div class="binance-trading-widget">
         <div class="binance-trading-view" id="tradingview_9d57b"></div>
     </div>
 
     <form method="get" class="binance-trading-form">
         <div class="search-bar">
-            <label for="coin">Select Coin:</label>
             <input type="text" id="coin" name="coin" placeholder="Enter coin symbol (e.g., BTC)">
             <button id="update-chart">Update Chart</button>
         </div>
@@ -54,67 +78,59 @@
                         );
                     }
     
-                    // Initial chart update, assuming you want it to be displayed on page load
-                    updateChart('{{ coin }}'); // Replace 'BTCUSD' with the initial coin symbol you want to display
-    
+                    var defaultSymbol = 'BTCUSDT';
+                    updateChart(defaultSymbol);
+                    
+
                     $('#update-chart').on('click', function () {
+                        event.preventDefault();
                         console.log("Update chart button clicked!");
                         var coinSymbol = $('#coin').val().toUpperCase();
                         updateChart(coinSymbol);
+                        document.getElementById("amount").placeholder = coinSymbol;
                     });
                 });
-            </script>
-            <div id="tradingview_9d57b"></div>
+        </script>
+        <div id="tradingview_9d57b"></div>
+    </div>
+
+    <form>
+        <div class="form-container">
+            <div>
+                <label for="price" class="field-label">Price:</label>
+                <input type="text" id="price" name="price" dir="rtl" placeholder="USDT">
+            </div>
+            <div>
+                <label for="amount" class="field-label">Amount:</label>
+                <input type="text" id="amount" name="amount" dir="rtl" placeholder="{{ coin }}">
+            </div>
+            <div>
+                <label for="total" class="field-label">Total:</label>
+                <input type="text" id="total" name="total" dir="rtl" placeholder="USDT">
+            </div>
         </div>
-        
-        
-
-        <h1>Converter</h1>
-
-    <form id="currency-converter-form" class="binance-converter-form">
-        {% csrf_token %}
-        <label for="amount" style="color: #fff" >Amount:</label>
-        <input type="number" id="amount" name="amount" value="1">
-
-        <label for="conversion_type" style="color: #fff">Conversion Type:</label>
-        <select id="conversion_type" name="conversion_type">
-            <option value="{{ coin }}_to_usd" selected>{{ coin }} to USD</option>
-            <option value="usd_to_{{ coin }}">USD to {{ coin }}</option>
-        </select>
-
-        <button type="submit">Convert</button>
     </form>
 
-    <h3 class="binance-converted-amount">Converted Amount: {{ converted_amount }} {{ converted_currency }}</h3>
-
     <script>
-        $(document).ready(function () {
-            function updateCurrencyConverter(formData) {
-                $.ajax({
-                    url: '{% url "graphics-page" %}',
-                    method: 'GET',
-                    data: formData,
-                    success: function (data) {
-                        $('h3').text('Converted Amount: ' + data.converted_amount + ' ' + data.converted_currency);
-                    },
-                    error: function (error) {
-                        console.log('Error:', error);
-                    }
-                });
+        document.addEventListener('DOMContentLoaded', function() {
+            var priceInput = document.getElementById('price');
+            var amountInput = document.getElementById('amount');
+            var totalInput = document.getElementById('total');
+
+            priceInput.value = '{{ last_price }}';
+    
+            function updateTotal() {
+                var price = parseFloat(priceInput.value) || 0;
+                var amount = parseFloat(amountInput.value) || 0;
+                var total = price * amount;
+                totalInput.value = total.toFixed(2);
             }
-
-            $('#currency-converter-form').on('submit', function (event) {
-                event.preventDefault();
-                const formData = $(this).serialize();
-                updateCurrencyConverter(formData);
-            });
-
-            $('#conversion_type').on('change', debounce(function () {
-                const formData = $('#currency-converter-form').serialize();
-                updateCurrencyConverter(formData);
-            }, 500));
+    
+            updateTotal();
+    
+            priceInput.addEventListener('input', updateTotal);
+            amountInput.addEventListener('input', updateTotal);
         });
     </script>
-
 </body>
 </html>

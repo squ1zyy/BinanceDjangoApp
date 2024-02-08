@@ -14,7 +14,7 @@
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 </head>
 
-<body>
+<body style="background-color: #161a1e">
     {% include 'navbar.html' %}
 
     <table id="crypto-table" class="table table-hover table-dark">
@@ -72,11 +72,8 @@
 
             setInterval(updateElement, 3000);
         });
-
-        $(document).ready(function() {
-        $("#crypto-table").draggable();
-    });
     </script>
-</body>
 
+
+</body>
 </html>

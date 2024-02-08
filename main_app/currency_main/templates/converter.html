@@ -1,0 +1,43 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body style="background-color: rgb(105, 104, 104);">
+
+</body>
+</html>
+
+
+<form id="currency-converter-form" class="binance-converter-form" method="post">
+    {% csrf_token %}        
+    <div class="converter">
+        <div class="crypto-label binance-converter-form">
+            <div class="label-content">
+                <div class="content-row">
+                    <div class="content-label" style="color: #fff">{{ form.amount }}</div>
+                </div>
+
+                <div class="content-row">
+                    <div class="content-label" style="color: #fff">{{ form.conversion_type }}</div>
+                </div>
+                
+                <div class="content-row">
+                    <button type="submit" id="convert-button">Convert</button>
+                </div>
+            </div>
+        </div>
+        <div class="crypto-label binance-converted-amount">
+            <div class="label-title">Converted Amount:</div>
+            <div class="label-content">
+                <div class="content-row">
+                    <div class="content-value">{{ converted_amount }} {{ converted_currency }}</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>

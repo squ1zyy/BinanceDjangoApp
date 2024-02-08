@@ -18,6 +18,6 @@ from django.contrib import admin
 from django.urls import include, path
 
 urlpatterns = [
-    path('currency_main/', include('currency_main.urls')),
+    path('', include('currency_main.urls')),
     path('admin/', admin.site.urls),
 ]

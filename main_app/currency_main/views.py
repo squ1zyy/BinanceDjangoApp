@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from binance.client import Client
-from currency_main.forms import UserRegisterForm, UserLoginForm
+from currency_main.forms import UserRegisterForm, UserLoginForm, CurrencyConverterForm, ApiForm, EditForm, BuyForm
 from django.contrib.auth import login as auth_login, logout as auth_logout, get_user_model
 from django.utils.encoding import force_str, force_bytes
 from django.template.loader import render_to_string
@@ -11,6 +11,8 @@ from django.core.mail import EmailMessage
 from django.contrib import messages
 from .models import *
 from binance.exceptions import BinanceAPIException
+from decimal import Decimal
+from django.http import JsonResponse
 
 client = Client()
 
@@ -56,42 +58,93 @@ def update_binance_data(request):
 def main_page(request):
     return update_binance_data(request)
 
-def graphics(request):
-    return render(request, 'graphics.html')
-
-
 def currency_converter(request):
     coin = request.GET.get('coin', default='BTCUSDT')
-    
-    ticker = client.get_ticker(symbol=f'{coin}')
-    last_price = float(ticker['lastPrice'])
+    ticker = client.get_ticker(symbol=coin)
+    last_price = Decimal(str(ticker['lastPrice']))
+    formatted_last_price = "{:,.2f}".format(last_price)
 
-    formatted_price = "{:,.2f}".format(last_price)
+    if request.method == 'POST': 
+        form = BuyForm(request.POST)
 
-    if request.method == 'GET': 
-        amount = float(request.GET.get('amount', 1))
-        conversion_type = request.GET.get('conversion_type', f'{coin}_to_usd')
+        if form.is_valid():
+            amount = form.cleaned_data['buy_coin']
+            price = form.cleaned_data['sell_usdt']
 
-        if conversion_type == f'{coin}_to_usd':
-            converted_amount = amount * last_price
-            converted_currency = 'USDT'
+            converted_amount = Decimal(amount) / last_price
+            converted_total = Decimal(amount) * last_price
 
-        elif conversion_type == f'usd_to_{coin}':
-            converted_amount = amount / last_price
-            converted_currency = 'BTC'
+            return render(request, 'graphics.html', {
+                'form': form,
+                'amount': amount,
+                'converted_amount': converted_amount,
+                'converted_total': converted_total,
+                'coin': coin,
+                'price': price,
+                'total': converted_total,
+            })
+    else:
+        form = BuyForm()
+
+    return render(request, 'graphics.html', {'form': form, 'coin': coin, 'ticker': ticker, 'last_price': formatted_last_price})
+
+def last_price(request):
+    coin = request.GET.get('coin', default='BTCUSDT')
+    ticker = client.get_ticker(symbol=coin)
+    last_price = Decimal(str(ticker['lastPrice']))
+    formatted_last_price = "{:,.2f}".format(last_price)
+
+    # Возвращаем только цену монеты в формате JSON
+    return JsonResponse({'last_price': formatted_last_price})
+
+# def trade_view(request):
+#     if request.method == 'POST': 
+#         form = BuyForm(request.POST)
+#     else:
+#         form = BuyForm()
+#     return render(request, 'graphics.html', {'form': form})
+
+def profile(request):
+    get_api_data = UserApiData.objects.all()
+    if request.method == 'POST':
+        form = ApiForm(request.POST)
+
+        if form.is_valid():
+            name = form.cleaned_data['name']
+            api_key = form.cleaned_data['api_key']
+            secret_key = form.cleaned_data['secret_key']
+
+            profile_data = UserApiData.objects.create(
+                name=name,
+                api_key=api_key,
+                secret_key=secret_key,
+            )
+            return redirect('profile')
         else:
-            converted_amount = 0
-            converted_currency = 'Invalid Currency'
+            return '404'
+    else:
+        form = ApiForm()
+    return render(request, 'profile.html', {'form': form, 'profile_data': get_api_data})
 
-        return render(request, 'graphics.html', {
-            'amount': amount,
-            'converted_amount': converted_amount,
-            'converted_currency': converted_currency,
-            'coin': coin,
-            'price': formatted_price,
-        })
+def delete(request, id):
+    model = UserApiData.objects.get(pk=id)
+    model.delete()
+    return redirect('profile')
 
-    return render(request, 'graphics.html')
+def edit(request, id):
+    model = UserApiData.objects.get(pk=id)
+    if request.method == 'POST':
+        form = EditForm(request.POST)
+        if form.is_valid():
+            model.name = form.cleaned_data['name']
+            model.api_key = form.cleaned_data['api_key']
+            model.secret_key = form.cleaned_data['secret_key']
+            model.save()
+            return redirect('profile')
+    else:
+        form = EditForm(instance=model)
+
+    return render(request, 'edit.html', {'form': form, 'model': model})
 
 def register(request):
     if request.method == 'POST':
@@ -167,4 +220,3 @@ def activate(request, uidb64, token):
         messages.error(request, 'Ссылка не коректна!')
 
     return redirect('main-page')
-

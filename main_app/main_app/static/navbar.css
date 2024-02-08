@@ -1,0 +1,18 @@
+/* Navbar Settings */
+
+.navbar {
+    background-color: #181a20;
+    border-bottom: 1px solid rgb(37, 41, 48);
+}
+
+.navbar a {
+    color: #dcecef !important;
+}
+
+.navbar a:hover {
+    color: #f3ba2f !important;
+}
+
+.navbar-nav:last-child {
+    margin-right: 0;
+}
