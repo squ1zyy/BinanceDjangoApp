@@ -89,20 +89,14 @@ def currency_converter(request):
     return render(request, 'graphics.html', {'form': form, 'coin': coin, 'ticker': ticker, 'last_price': formatted_last_price})
 
 def last_price(request):
-    coin = request.GET.get('coin', default='BTCUSDT')
+    coin = request.GET.get('coin')
     ticker = client.get_ticker(symbol=coin)
-    last_price = Decimal(str(ticker['lastPrice']))
+    last_price = ticker['lastPrice']
     formatted_last_price = "{:,.2f}".format(last_price)
 
-    # Возвращаем только цену монеты в формате JSON
     return JsonResponse({'last_price': formatted_last_price})
 
-# def trade_view(request):
-#     if request.method == 'POST': 
-#         form = BuyForm(request.POST)
-#     else:
-#         form = BuyForm()
-#     return render(request, 'graphics.html', {'form': form})
+# Profile
 
 def profile(request):
     get_api_data = UserApiData.objects.all()
@@ -145,6 +139,8 @@ def edit(request, id):
         form = EditForm(instance=model)
 
     return render(request, 'edit.html', {'form': form, 'model': model})
+
+# Registration
 
 def register(request):
     if request.method == 'POST':

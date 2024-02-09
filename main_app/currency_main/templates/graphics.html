@@ -57,39 +57,48 @@
     <div class="chart-container">
         <script type="text/javascript" src="https://s3.tradingview.com/tv.js" defer></script>
         <script type="text/javascript">
-                $(document).ready(function () {
-                    function updateChart(coinSymbol) {
-                        console.log("Updating chart for", coinSymbol);
-                        new TradingView.widget(
-                            {
-                                "width": 1050,
-                                "height": 600,
-                                "symbol": `BINANCE:${coinSymbol}`,
-                                "interval": "1H",
-                                "timezone": "Etc/UTC",
-                                "theme": "dark",
-                                "style": "1",
-                                "locale": "en",
-                                "toolbar_bg": "#f1f3f6",
-                                "enable_publishing": false,
-                                "allow_symbol_change": true,
-                                "container_id": "tradingview_9d57b"
-                            }
-                        );
-                    }
-    
-                    var defaultSymbol = 'BTCUSDT';
-                    updateChart(defaultSymbol);
+            $(document).ready(function () {
+                function updateChart(coinSymbol) {
+                    console.log("Updating chart for", coinSymbol);
+                    new TradingView.widget(
+                        {
+                            "width": 1050,
+                            "height": 600,
+                            "symbol": `BINANCE:${coinSymbol}`,
+                            "interval": "1H",
+                            "timezone": "Etc/UTC",
+                            "theme": "dark",
+                            "style": "1",
+                            "locale": "en",
+                            "toolbar_bg": "#f1f3f6",
+                            "enable_publishing": false,
+                            "allow_symbol_change": true,
+                            "container_id": "tradingview_9d57b"
+                        }
+                    );
                     
-
-                    $('#update-chart').on('click', function () {
-                        event.preventDefault();
-                        console.log("Update chart button clicked!");
-                        var coinSymbol = $('#coin').val().toUpperCase();
-                        updateChart(coinSymbol);
-                        document.getElementById("amount").placeholder = coinSymbol;
+                    // Update coin value in buy and sell forms
+                    document.querySelectorAll('.form-container input[name="amount"]').forEach(function(input) {
+                        input.placeholder = coinSymbol;
                     });
+                    
+                    // Update coin value in form titles
+                    document.querySelectorAll('.form-container button').forEach(function(button) {
+                        button.textContent = (button.textContent.split(' ')[0] === 'Buy') ? 'Buy ' + coinSymbol : 'Sell ' + coinSymbol;
+                    });
+                }
+        
+                var defaultSymbol = 'BTCUSDT';
+                updateChart(defaultSymbol);
+                
+        
+                $('#update-chart').on('click', function () {
+                    event.preventDefault();
+                    console.log("Update chart button clicked!");
+                    var coinSymbol = $('#coin').val().toUpperCase();
+                    updateChart(coinSymbol);
                 });
+            });
         </script>
         <div id="tradingview_9d57b"></div>
     </div>
@@ -136,24 +145,16 @@
             const sellForm = document.getElementById('sellForm');
             
             const buyPriceInput = document.getElementById('buyPrice');
-            const buyAmountInput = document.getElementById('buyAmount');
-            const buyTotalInput = document.getElementById('buyTotal');
-            
             const sellPriceInput = document.getElementById('sellPrice');
-            const sellAmountInput = document.getElementById('sellAmount');
-            const sellTotalInput = document.getElementById('sellTotal');
             
-            const lastPrice = parseFloat('{{ last_price }}') || 0;
-            
-            function updateTotal(priceInput, amountInput, totalInput) {
-                const price = parseFloat(priceInput.value) || 0;
-                const amount = parseFloat(amountInput.value) || 0;
-                const total = price * amount;
-                totalInput.value = total.toFixed(2);
+            function updatePriceField(priceInput, lastPrice) {
+                const price = parseFloat(lastPrice) || 0;
+                priceInput.value = price.toFixed(2);
             }
             
-            buyPriceInput.value = lastPrice.toFixed(2);
-            sellPriceInput.value = lastPrice.toFixed(2);
+            // Fetch last price when page loads
+            updatePriceField(buyPriceInput, '{{ last_price }}');
+            updatePriceField(sellPriceInput, '{{ last_price }}');
             
             buyForm.addEventListener('input', function() {
                 updateTotal(buyPriceInput, buyAmountInput, buyTotalInput);
@@ -161,6 +162,26 @@
             
             sellForm.addEventListener('input', function() {
                 updateTotal(sellPriceInput, sellAmountInput, sellTotalInput);
+            });
+            
+            $('#update-chart').on('click', function () {
+                event.preventDefault();
+                console.log("Update chart button clicked!");
+                var coinSymbol = $('#coin').val().toUpperCase();
+                
+                // Fetch last price for the selected coin symbol
+                $.ajax({
+                    url: "{% url 'get_last_price' %}",
+                    type: 'GET',
+                    data: {coin: coinSymbol},
+                    success: function(data) {
+                        updatePriceField(buyPriceInput, data.last_price);
+                        updatePriceField(sellPriceInput, data.last_price);
+                    },
+                    error: function(xhr, status, error) {
+                        console.error('Error fetching last price:', error);
+                    }
+                });
             });
         });
     </script>
